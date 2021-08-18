@@ -1,0 +1,75 @@
+{% load static %}
+
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'vendor/bootstrap/css/login.css' %}" rel="stylesheet">
+</head>
+
+<body>
+
+    <main class="form-signin md-3">
+
+
+        <h1 class='text-center text-white'>Acesso</h1>
+        <br>
+        {% include 'partials/_message.html' %}
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="form-floating">
+
+                <input type="text" name="usuario" class="form-control" value="{{ request.POST.usuario }}"
+                    id="floatingInput" placeholder="Usuário">
+                <label for="floatingInput">Usuário</label>
+            </div>
+
+
+
+            <div class="form-floating">
+                <input type="password" name="senha" class="form-control" id="floatingPassword" placeholder="Senha">
+                <label for="floatingInput">Senha</label>
+            </div>
+
+
+            <div class="checkbox mb-3">
+                <label class="text-muted">
+                    <input type="checkbox" value="remember-me"> Lembrar-me
+                </label>
+            </div>
+
+            <div class="d-grid gap-2 text-center">
+                <button class="btn btn-lg btn-info text-white" type="submit">Acessar</button>
+
+            </div>
+            <br>
+            <div class="row text-center">
+                <label>
+                    <p><a href="{% url 'cadastro' %}">Ainda não possui cadastro?</a></p>
+                </label>
+            </div>
+            </div>
+
+            <p class=" mt-5 mb-3 text-center text-muted">&copy;2021</p>
+        </form>
+
+
+        </div>
+        <!-- Option 1: Bootstrap Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    </main>
+</body>
+
+</html>
