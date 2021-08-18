@@ -1,4 +1,4 @@
-# finances
+# Ibovespa Analisys
 Tickers Analysis with Python in Web Enviroment
 
 It's a project initialing idealized for learning and pratice Python and Django Framework applied in a real case.
