@@ -6,13 +6,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="author" content="Kaio">
     <meta name="generator" content="Hugo 0.87.0">
     <title>Enapse Finances | Projeto Beta</title>
-
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/cover/">
-
-
 
     <!-- Bootstrap core CSS -->
     <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -35,10 +31,11 @@
 
 
     <!-- Custom styles for this template -->
-    <link href="cover.css" rel="stylesheet">
+    <link href="{% static 'css/index.css'%}" rel="stylesheet">
+
 </head>
 
-<body class="d-flex h-100 text-center text-white bg-dark">
+<body class="d-flex h-100 text-center text-white">
 
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         <header class="mb-auto">
@@ -47,7 +44,7 @@
                 <nav class="nav nav-masthead justify-content-center float-md-end">
                     <a class="nav-link active" aria-current="page" href="#">Home</a>
                     <a class="nav-link" href="#">Recursos</a>
-                    <a class="nav-link" href="#">Acessar</a>
+                    <a class="nav-link" href="{% url 'login'  %}">Acessar</a>
                 </nav>
             </div>
         </header>
@@ -58,7 +55,8 @@
                 venda e
                 montagem de portfólio.</p>
             <p class="lead">
-                <a href="#" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Comece Agora</a>
+                <a href="{% url 'login'  %}" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Comece
+                    Agora</a>
             </p>
         </main>
 
@@ -69,6 +67,7 @@
 
 
 
+    <script src="{% static 'js/bootstrap.bundle.min.js'%}"></script>
 </body>
 
 </html>
