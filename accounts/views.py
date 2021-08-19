@@ -1,9 +1,11 @@
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages, auth
 from django.db.models import Exists
 from django.core.validators import validate_email
 from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
@@ -21,15 +23,11 @@ def login(request):
     else:
         auth.login(request, user)
         messages.success(request, 'Usuário logado com sucesso!')
-        return redirect('dashboard')
+        return render(request, './dashboard/dashboard.html')
 
 
 def logout(request):
     return render(request, 'contas/login.html')
-
-
-def dashboard(request):
-    return render(request, 'contas/dashboard.html')
 
 
 def cadastro(request):
