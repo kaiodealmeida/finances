@@ -10,6 +10,9 @@ from django.contrib.auth.decorators import login_required
 
 
 def login(request):
+    if request.user.is_authenticated:
+        messages.success(request, 'Seja bem vindo de volta!')
+        return render(request, 'dashboard/dashboard.html')
     if request.method != 'POST':
         return render(request, 'contas/login.html')
 
