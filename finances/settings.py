@@ -148,4 +148,5 @@ MESSAGE_TAGS = {
     constants.INFO: 'alert-info',
 
 }
+
 django_heroku.settings(locals())
