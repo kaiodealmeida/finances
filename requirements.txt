@@ -2,3 +2,4 @@ django
 yfinance
 pandas
 djangorestframework
+django-heroku

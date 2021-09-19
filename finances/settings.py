@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import django_heroku
 from django.contrib.messages import constants
 from pathlib import Path
 import os
@@ -147,3 +148,4 @@ MESSAGE_TAGS = {
     constants.INFO: 'alert-info',
 
 }
+django_heroku.settings(locals())
