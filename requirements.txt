@@ -3,3 +3,4 @@ yfinance
 pandas
 djangorestframework
 django-heroku
+gunicorn
