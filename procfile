@@ -1,1 +1,1 @@
-web: gunicorn finances-nifi-flow.wsgi
+web: gunicorn nifi-flow-bi.wsgi
