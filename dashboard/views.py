@@ -1,15 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.http import JsonResponse
-from django_pandas.managers import DataFrameManager
+from decimal import *
 
 # Importar bibliotecas para tickers
 
-import numpy as np
 import yfinance as yf
 import pandas as pd
-
-objects = DataFrameManager()
+import numpy as np
 
 
 def dashboard(request):
@@ -37,16 +34,32 @@ def acoes(request):
                              'Digite um ticker válido!')
         return redirect('index_dashboard')
     # função do yfinance para trabalhar com dados de vários tickers
-    df = yf.download(ticker, group_by="Ticker", period="1d")
-    df['Ticker'] = ticker
-    df.rename(columns={'Adj Close': 'Preço de Fechamento R$:'}, inplace=True)
-    # salva o arquivo com o nome ticker_TICKER
-    df.to_csv(f'ticker_{ticker}.csv')
-    # Define a lista de colunas como Data, ticker e preço de fechamento ajustado
-    col_list = ['Preço de Fechamento R$:']
-    df = pd.read_csv(f'ticker_{ticker}.csv', usecols=col_list, na_filter=False)
+    df = yf.download(ticker, group_by="Ticker", period="max")
+    adjclose = df.iloc[-1].at['Adj Close']
+    retorno = (df['Adj Close'] / df['Adj Close'].shift(1)) - 1
+    retorno.to_csv(f'tx_retorno_{ticker}.csv')
+    col_list = ['Date', 'Adj Close']
+    retorno = pd.read_csv(f'tx_retorno_{ticker}.csv', usecols=col_list)
+    retornomedio = (
+        retorno['Adj Close'].iloc[3:].sum() / retorno.ndim) * 100
+    df2 = df['Adj Close']
+    retornolog = np.log(df2 / df2.shift(1))
+    txrisk = (retornolog.std() * 250 ** 0.5) * 100
     # add esta coluna, pois o dataframe não contém uma com o nome do ticker
-    return render(request, 'dashboard/dashboard_result.html',  {'df': df})
+    return render(request, 'dashboard/dashboard_result.html',  {
+        'df': adjclose,
+        'retorno': retornomedio,
+        'txrisk': txrisk
+    })
+
+
+def inserir(request):
+    ticker = request.GET.get('ticker')
+    retornomedio = request.GET.get('retornomedio')
+    return render(request, 'dashboard/dashboard.html',  {
+        'ticker': ticker,
+        'retorno': retornomedio
+    })
 
 
 def covariancia(request):

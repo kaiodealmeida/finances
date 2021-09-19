@@ -9,4 +9,5 @@ urlpatterns = [
     path('acoes/', views.acoes, name='acoes'),
     path('covariancia/', views.covariancia, name='covariancia'),
     path('correlacao/', views.correlacao, name='correlação'),
+    path('inserir/', views.inserir, name='inserir'),
 ]
