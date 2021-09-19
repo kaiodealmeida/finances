@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from decimal import *
-
+from .models import Acoes
+from .serializers import AcoesSerializer
+from rest_framework import viewsets
 # Importar bibliotecas para tickers
 
 import yfinance as yf
@@ -45,20 +47,18 @@ def acoes(request):
     df2 = df['Adj Close']
     retornolog = np.log(df2 / df2.shift(1))
     txrisk = (retornolog.std() * 250 ** 0.5) * 100
+
+    # Salvar no BD as informações, para posteriormente vincular ao usuário.
+    acao = Acoes(ticker=ticker, adjclose=adjclose,
+                 txrisk=txrisk, retorno=retornomedio)
+    acao.save()
+
     # add esta coluna, pois o dataframe não contém uma com o nome do ticker
     return render(request, 'dashboard/dashboard_result.html',  {
+        'ticker': ticker,
         'df': adjclose,
         'retorno': retornomedio,
         'txrisk': txrisk
-    })
-
-
-def inserir(request):
-    ticker = request.GET.get('ticker')
-    retornomedio = request.GET.get('retornomedio')
-    return render(request, 'dashboard/dashboard.html',  {
-        'ticker': ticker,
-        'retorno': retornomedio
     })
 
 
@@ -70,3 +70,8 @@ def covariancia(request):
 def correlacao(request):
     messages.error(request, 'Precisa logar para acessar!')
     return render(request, 'contas/login.html')
+
+
+class AcoesView(viewsets.ModelViewSet):
+    serializer_class = AcoesSerializer
+    queryset = Acoes.objects.all()
