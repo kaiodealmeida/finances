@@ -4,6 +4,7 @@ from decimal import *
 from .models import Acoes
 from .serializers import AcoesSerializer
 from rest_framework import viewsets
+from django.contrib.auth.models import User
 # Importar bibliotecas para tickers
 
 import yfinance as yf
@@ -48,9 +49,10 @@ def acoes(request):
     retornolog = np.log(df2 / df2.shift(1))
     txrisk = (retornolog.std() * 250 ** 0.5) * 100
 
+    u = request.user
     # Salvar no BD as informações, para posteriormente vincular ao usuário.
     acao = Acoes(ticker=ticker, adjclose=adjclose,
-                 txrisk=txrisk, retorno=retornomedio)
+                 txrisk=txrisk, retorno=retornomedio, investidor=u)
     acao.save()
 
     # add esta coluna, pois o dataframe não contém uma com o nome do ticker
