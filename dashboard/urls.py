@@ -9,7 +9,7 @@ urlpatterns = [
     path('', views.dashboard, name='index_dashboard'),
     path('portfolio/', views.portfolio, name='portfolio'),
     path('acoes/', views.acoes, name='acoes'),
-
+    path('inserir/', views.inserir, name='inserir'),
     path('covariancia/', views.covariancia, name='covariancia'),
     path('correlacao/', views.correlacao, name='correlação'),
     path('api/', include(router.urls), name='api'),

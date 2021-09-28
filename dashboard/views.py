@@ -28,40 +28,64 @@ def portfolio(request):
 def acoes(request):
 
     if not request.user.is_authenticated:
+
         messages.error(request, 'Você precisa se logar para acessar!')
         return render(request, 'contas/login.html')
 
     ticker = request.GET.get('ticker')
-    if ticker is None or not ticker:
-        messages.add_message(request, messages.ERROR,
-                             'Digite um ticker válido!')
-        return redirect('index_dashboard')
-    # função do yfinance para trabalhar com dados de vários tickers
-    df = yf.download(ticker, group_by="Ticker", period="max")
-    adjclose = df.iloc[-1].at['Adj Close']
-    retorno = (df['Adj Close'] / df['Adj Close'].shift(1)) - 1
-    retorno.to_csv(f'tx_retorno_{ticker}.csv')
-    col_list = ['Date', 'Adj Close']
-    retorno = pd.read_csv(f'tx_retorno_{ticker}.csv', usecols=col_list)
-    retornomedio = (
-        retorno['Adj Close'].iloc[3:].sum() / retorno.ndim) * 100
-    df2 = df['Adj Close']
-    retornolog = np.log(df2 / df2.shift(1))
-    txrisk = (retornolog.std() * 250 ** 0.5) * 100
 
-    u = request.user
-    # Salvar no BD as informações, para posteriormente vincular ao usuário.
-    acao = Acoes(ticker=ticker, adjclose=adjclose,
-                 txrisk=txrisk, retorno=retornomedio, investidor=u)
-    acao.save()
+    try:
+    
+        if ticker is None or not ticker:
 
-    # add esta coluna, pois o dataframe não contém uma com o nome do ticker
+            messages.add_message(request, messages.ERROR,
+                                'Digite um ticker válido!')
+            return redirect('index_dashboard')
+        df = yf.download(ticker, group_by="Ticker", period="max")
+        adjclose = df.iloc[-1].at['Adj Close']
+        retorno = (df['Adj Close'] / df['Adj Close'].shift(1)) - 1
+        retorno.to_csv(f'tx_retorno_{ticker}.csv')
+        col_list = ['Date', 'Adj Close']
+        retorno = pd.read_csv(f'tx_retorno_{ticker}.csv', usecols=col_list)
+        retornomedio = (
+            retorno['Adj Close'].iloc[3:].sum() / retorno.ndim) * 100
+        df2 = df['Adj Close']
+        retornolog = np.log(df2 / df2.shift(1))
+        txrisk = (retornolog.std() * 250 ** 0.5) * 100
+        acao = Acoes(ticker=ticker, adjclose=adjclose,
+                    txrisk=txrisk, retorno=retornomedio)
+        acao.save()
+
+    except IndexError:
+        messages.error(request, 'Ticker invalido')
+
+
+
+    
     return render(request, 'dashboard/dashboard_result.html',  {
         'ticker': ticker,
         'df': adjclose,
         'retorno': retornomedio,
         'txrisk': txrisk
     })
+
+def inserir(request):
+    if not request.user.is_authenticated:
+
+        messages.error(request, 'Você precisa se logar para acessar!')
+        return render(request, 'contas/login.html')
+    acao = Acoes.objects.last()
+    acao = Acoes(ticker=acao.ticker, adjclose=acao.adjclose,
+                 txrisk=acao.txrisk, retorno=acao.retorno, investidor=request.user)
+    acao.save()
+    return render(request, 'dashboard/dashboard.html', {
+        'ticker': acao.ticker,
+        'df': acao.adjclose,
+        'retorno': acao.retorno,
+        'txrisk': acao.txrisk
+    }
+    )
+
 
 
 def covariancia(request):
@@ -76,4 +100,4 @@ def correlacao(request):
 
 class AcoesView(viewsets.ModelViewSet):
     serializer_class = AcoesSerializer
-    queryset = Acoes.objects.all()
+    queryset = Acoes.objects.filter(investidor__isnull=False)
