@@ -28,14 +28,16 @@
                             <form method="get" action="#" value="{{ request.GET.ticker }}">
                               
                                 <h5 class="card-title">{{ ticker }}</h5>
-                                <p class="card-text">Preço de fechamento: R$ {{ df }}
+                                <p class="card-text">Preço de fechamento: R$ {{ df|stringformat:".2f" }}
                                 </p>
-                                <p class="card-text">Retorno médio : {{ retorno }} %
+                                <p class="card-text">Retorno médio : {{ retorno|stringformat:".2f"  }} %
                                 </p>
-                                <p class="card-text">Volatilidade anualizada: {{ txrisk }} %
+                                <p class="card-text">Volatilidade anualizada: {{ txrisk|stringformat:".2f"  }} %
                                 </p>
 
                             </form>
+                            <br>
+                            <a href="{% url 'inserir' %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Inserir no Portfolio</a>
                         </div>
                     </div>
                 </div>
