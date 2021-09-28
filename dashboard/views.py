@@ -112,4 +112,4 @@ def correlacao(request):
 
 class AcoesView(viewsets.ModelViewSet):
     serializer_class = AcoesSerializer
-    queryset = Acoes.objects.filter(investidor__isnull=False)
+    queryset = Portfolio.objects.filter(investidor__isnull=False)
