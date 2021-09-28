@@ -1,10 +1,56 @@
-{% extends 'partials/_dashboard_top.html' %}
+{% load static %}
 
 
+<!doctype html>
+<html lang="pt-br">
 
-{% block content %}
+{% include 'partials/_dashboard_top_search.html' %}
 
 
+<body>
+
+    {% include 'partials/_dashboard_side_bar.html' %}
+
+    {%block conteudo%}
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <div class="card text-left">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Meu Portfolio</a>
+                       {% for t in t.ticker %}
+                        <div class="row">
+                            <div class="col-sm-6">
+                              <div class="card">
+                                <div class="card-body">
+                                  <h5 class="card-title">{{ t.ticker }}</h5>
+                                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                                </div>
+                              </div>
+                            </div>
+                            {% endfor %}
+                         
+                         
+                              </div>
+                            </div>
+                          </div>
+                          
+                          
+                    </li>
+                </ul>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="card">
+
+                    </div>
+                </div>
+            </div>
+    </main>
+</body>
+
+</html>
+    {% endblock %}
 
 
-{% endblock %}
