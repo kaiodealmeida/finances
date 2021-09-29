@@ -83,19 +83,26 @@ def inserir(request):
         acao = Portfolio(ticker=acao.ticker, adjclose=acao.adjclose,
                     txrisk=acao.txrisk, retorno=acao.retorno, investidor=request.user)
         acao.save()
-        return render(request, 'dashboard/portfolio.html', {
-            'ticker': acao.ticker,
-            'df': acao.adjclose,
-            'retorno': acao.retorno,
-            'txrisk': acao.txrisk
-        }
-        )
+        return redirect('portfolio')
+        
     except IntegrityError:  
         messages.error(request, 'Este ticker ja existe em seu Portfolio')         
         return redirect('index_dashboard')
 
 
+def portfolio(request):
+
+    if not request.user.is_authenticated:
+
+        messages.error(request, 'Você precisa se logar para acessar!')
+        return render(request, 'contas/login.html')
   
+    else:
+        
+        obj = Portfolio.objects.filter(investidor=request.user)  
+        return render(request, 'dashboard/portfolio.html',  {
+            'ticker': obj,
+        })
 
 
 

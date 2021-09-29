@@ -18,35 +18,30 @@
                 <ul class="nav nav-tabs card-header-tabs">
                     <li class="nav-item">
                         <a class="nav-link active" href="#">Meu Portfolio</a>
-                       {% for t in t.ticker %}
-                        <div class="row">
-                            <div class="col-sm-6">
-                              <div class="card">
-                                <div class="card-body">
-                                  <h5 class="card-title">{{ t.ticker }}</h5>
-                                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                  <a href="#" class="btn btn-primary">Go somewhere</a>
-                                </div>
-                              </div>
-                            </div>
-                            {% endfor %}
-                         
-                         
-                              </div>
-                            </div>
+                       
+                    
+
+<div class="row">
+  {% for i in ticker %}
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{ i.ticker }}</h5>
+        <p class="card-text">Preco de compra: R$ {{ i.adjclose }}</p>
+        <a href="#" class="btn btn-primary">Excluir</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+                       
                           </div>
                           
                           
                     </li>
                 </ul>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="card">
-
-                    </div>
-                </div>
-            </div>
+           
     </main>
 </body>
 
