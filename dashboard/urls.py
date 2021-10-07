@@ -10,9 +10,12 @@ urlpatterns = [
     path('portfolio/', views.portfolio, name='portfolio'),
     path('acoes/', views.acoes, name='acoes'),
     path('inserir/', views.inserir, name='inserir'),
+    path('excluir/', views.excluir, name='excluir'),
     path('covariancia/', views.covariancia, name='covariancia'),
     path('correlacao/', views.correlacao, name='correlação'),
+    path('sair/', views.logout_view, name='sair'),
     path('api/', include(router.urls), name='api'),
+
 
 
 ]

@@ -28,9 +28,9 @@
                             <form method="get" action="#" value="{{ request.GET.ticker }}">
                               
                                 <h5 class="card-title">{{ ticker }}</h5>
-                                <p class="card-text">Preço de fechamento: R$ {{ df|stringformat:".2f" }}
+                                <p class="card-text">Preço de fechamento: R$ {{ adjclose|stringformat:".2f" }}
                                 </p>
-                                <p class="card-text">Retorno médio : {{ retorno|stringformat:".2f"  }} %
+                                <p class="card-text">Retorno médio : {{ retornomedio|stringformat:".2f"  }} %
                                 </p>
                                 <p class="card-text">Volatilidade anualizada: {{ txrisk|stringformat:".2f"  }} %
                                 </p>
