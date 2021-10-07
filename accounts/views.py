@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 
 
 def login(request):
+
     if request.user.is_authenticated:
         messages.success(request, 'Seja bem vindo de volta!')
         return render(request, 'dashboard/dashboard.html')
@@ -71,11 +72,13 @@ def cadastro(request):
     if User.objects.filter(email=email).exists():
         messages.error(request, 'O email já existe!')
         return render(request, 'contas/cadastro.html')
+    
+    else:
 
-    messages.success(request, 'Usuário cadastrado com sucesso.')
+        messages.success(request, 'Usuário cadastrado com sucesso.')
 
-    usuario = User.objects.create_user(
-        username=usuario, password=senha, email=email)
-    usuario.save()
+        usuario = User.objects.create_user(
+            username=usuario, password=senha, email=email)
+        usuario.save()
 
-    return redirect('login')
+        return redirect('cadastro')

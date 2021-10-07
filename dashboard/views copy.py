@@ -4,13 +4,13 @@ from decimal import *
 from .models import Acoes, Portfolio
 from .serializers import AcoesSerializer
 from rest_framework import viewsets
+from django.contrib.auth.models import User
 from django.db import IntegrityError
-from dashboard import tickerassinc as ts
-from django.contrib.auth import logout
 
-def logout_view(request):
-    logout(request)
-    return redirect('index_dashboard')
+
+import yfinance as yf
+import pandas as pd
+import numpy as np
 
 
 def dashboard(request):
@@ -29,6 +29,7 @@ def portfolio(request):
 def acoes(request):
 
     if not request.user.is_authenticated:
+
         messages.error(request, 'Você precisa se logar para acessar!')
         return render(request, 'contas/login.html')
 
@@ -42,20 +43,32 @@ def acoes(request):
                                 'Digite um ticker válido!')
             return redirect('index_dashboard')
         else:                
-           
-            adjclose = ts.atual(ticker)
-            retornomedio = ts.retornomedio(ticker)
-            txrisk = ts.txrisk(ticker)
+            df = yf.download(ticker, group_by="Ticker", period="max")
+            adjclose = df.iloc[-1].at['Adj Close']
+            retorno = (df['Adj Close'] / df['Adj Close'].shift(1)) - 1
+            retorno.to_csv(f'tx_retorno_{ticker}.csv')
+            col_list = ['Date', 'Adj Close']
+            retorno = pd.read_csv(f'tx_retorno_{ticker}.csv', usecols=col_list)
+            retornomedio = (retorno['Adj Close'].iloc[3:].sum() / retorno.ndim) * 100
+            df2 = df['Adj Close']
+            retornolog = np.log(df2 / df2.shift(1))
+            txrisk = (retornolog.std() * 250 ** 0.5) * 100
+            acao = Acoes(ticker=ticker, adjclose=adjclose,
+                        txrisk=txrisk, retorno=retornomedio)
+            acao.save()
             return render(request, 'dashboard/dashboard_result.html',  {
             'ticker': ticker,
-            'adjclose': adjclose,
-            'retornomedio': retornomedio,
-            'txrisk': txrisk,
+            'df': adjclose,
+            'retorno': retornomedio,
+            'txrisk': txrisk
         })
 
     except (UnboundLocalError, IndexError):
         messages.error(request, 'Digite um ticker valido!')         
         return redirect('index_dashboard')
+    
+
+    
 
 
 def inserir(request):
@@ -71,23 +84,9 @@ def inserir(request):
         return redirect('portfolio')
         
     except IntegrityError:  
-        messages.error(request, 'Este ticker ja existe em seu Portfolio!')         
+        messages.error(request, 'Este ticker ja existe em seu Portfolio')         
         return redirect('index_dashboard')
 
-
-def excluir(request):
-
-    if not request.user.is_authenticated:
-
-        messages.error(request, 'Você precisa se logar para acessar!')
-        return render(request, 'contas/login.html')
-    
-    else:
-
-        obj = Portfolio.objects.filter(ticker=request.ticker)
-        print(obj)
-        return redirect('portfolio')    
-   
 
 def portfolio(request):
 
@@ -95,27 +94,16 @@ def portfolio(request):
 
         messages.error(request, 'Você precisa se logar para acessar!')
         return render(request, 'contas/login.html')
-            
+  
     else:
+        
         obj = Portfolio.objects.filter(investidor=request.user)  
-        list_tickers = []
-        for i in obj:
-            list_tickers.append(
-            	{
-                   'id': i.id,
-            	   'ticker': i.ticker,
-            	   'adjclose': i.adjclose,
-            	   'adjtoday': ts.atual(i.ticker),
-                   'rent': (float(ts.atual(i.ticker))/float(i.adjclose) - 1) * 100,
-            	}
-            )
-          
         return render(request, 'dashboard/portfolio.html',  {
-            'ticker': list_tickers,           
-           
+            'ticker': obj,
         })
-            
-       
+
+
+
 
 def covariancia(request):
     messages.error(request, 'Precisa logar para acessar!')

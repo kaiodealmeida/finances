@@ -28,7 +28,10 @@
       <div class="card-body">
         <h5 class="card-title">{{ i.ticker }}</h5>
         <p class="card-text">Preco de compra: R$ {{ i.adjclose }}</p>
-        <a href="#" class="btn btn-primary">Excluir</a>
+        <p class="card-text">Preco hoje: R$ {{ i.adjtoday|stringformat:".2f"  }}</p>
+        <p class="card-text">Ganho/Perda: {{ i.rent|stringformat:".2f"}} %</p>
+        <form method="get" action="#" value="{{ ri.id  }}">
+        <a href="{% url 'excluir' %}" value="{{ i.id }}" class="btn btn-primary">Excluir</a></form>
       </div>
     </div>
   </div>
